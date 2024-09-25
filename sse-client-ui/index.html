@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sse UI</title>
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="/fetch-sse.js"></script>
+    <style>
+      textarea {
+        width: 800px; height: 200px
+      }
+    </style>
+
+    <script>
+      $(function() {
+        $("#btn_summarize_streaming").on('click', function() {
+          requestSummarizeStreaming();
+        })
+
+        $("#btn_bot_message_streaming").on('click', function() {
+          requestBotMessageStreaming();
+        })
+      })
+
+      function requestSummarizeStreaming() {
+        var sentence = $("#sentence").val();
+        var metadata = {
+          "age": 15,
+          "name": "홍길동"
+        }
+
+        // EER 서버로 요청
+        var url = 'http://172.16.100.225:8080/sseClient'
+        var body = {
+          // "url": "http://172.16.100.225:8181/streaming/DEFAULT/summarize", // AI 서버 경로
+          "url": "http://172.16.110.139:8181/streaming/DEFAULT/summarize", // AI 서버 경로
+          "payload": { // AI 서버에 전달할 데이터
+            "sentence": sentence,
+            "metadata": metadata
+          }
+        }
+
+        fetchSse(url, body, function (data) {
+          try {
+            if (data && data != '[DONE]') { // streaming 메시지 수신 중
+              try {
+                var result = JSON.parse(data);
+                $("#summary_response").text(result.message)
+              } catch(e) {}
+            } else if (data == '[DONE]') { // streaming이 종료되었을 때 처리
+              console.log('done')
+            }
+          } catch (e) {
+            console.error(e)
+          }
+        });
+      }
+
+      function requestBotMessageStreaming() {
+        var message = $("#message").val();
+
+        // EER 서버로 요청
+        var url = 'http://172.16.100.225:8080/sseClient'
+        var body = {
+          "url": "http://172.16.100.225:8181/streaming/bots/rag_bot/chat", // AI 서버 경로
+          "payload": { // AI 서버에 전달할 데이터
+            "threadId": "TCKT001",
+            "accessType": "public",
+            "message": message,
+            "metadata": {},
+            "userId": "gdhong"
+          }
+        }
+
+        fetchSse(url, body, function (data) {
+          try {
+            if (data && data != '[DONE]') { // streaming 메시지 수신 중
+              try {
+                var result = JSON.parse(data);
+                $("#bot_messsage_response").text(result.message)
+              } catch(e) {}
+            } else if (data == '[DONE]') { // streaming이 종료되었을 때 처리
+              console.log('done')
+            }
+          } catch (e) {
+            console.error(e)
+          }
+        });
+      }
+    </script>
+  </head>
+  <body>
+
+  <h1>답변 요약</h1>
+  <textarea id="sentence">신용카드를 새로 발급받고 싶습니다. 절차가 어떻게 되나요? 개인정보 입력 후 동의하시면 됩니다.</textarea>
+  <br />
+  <button id="btn_summarize_streaming">답변 요약(Streaming)</button>
+  <div id="summary_response"></div>
+
+  <h1>답변 추천</h1>
+  <textarea id="message">인플레이션은 무엇인가?</textarea>
+  <br />
+  <button id="btn_bot_message_streaming">답변 추천(Streaming)</button>
+  <div id="bot_messsage_response"></div>
+
+  </body>
+</html>
