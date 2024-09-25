@@ -31,8 +31,6 @@ public class SseController {
         String payload = objectMapper.writeValueAsString(request.getPayload());
         StringEntity entity = new StringEntity(payload, StandardCharsets.UTF_8);
 
-        System.out.println("url : " + request.getUrl());
-        System.out.println("payload : " + payload);
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost http = new HttpPost(request.getUrl());
             http.setEntity(entity);
@@ -44,7 +42,6 @@ public class SseController {
                     String line;
                     BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), StandardCharsets.UTF_8));
                     while ((line = reader.readLine()) != null) {
-                        System.out.println("response : " + line);
                         writer.println(line);
                         writer.flush();
                     }
