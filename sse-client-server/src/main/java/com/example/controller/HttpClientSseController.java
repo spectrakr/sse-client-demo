@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletResponse;
 
-import com.example.SseRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -17,10 +16,12 @@ import org.apache.http.impl.client.HttpClients;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class SseController {
+@RequestMapping("httpClient")
+public class HttpClientSseController {
 
     @PostMapping(value = "/sseClient", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public void requestSse(

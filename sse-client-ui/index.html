@@ -32,20 +32,21 @@
         }
 
         // EER 서버로 요청
-        var url = 'http://172.16.100.225:8080/sseClient'
+        var hostUrl = 'http://172.16.100.225:8080/httpClient/sseClient'
+        // var hostUrl = 'http://172.16.100.225:8080/webflux/sseClient'
         var body = {
           "url": "http://172.16.100.225:8181/streaming/DEFAULT/summarize", // AI 서버 경로
-          // "url": "http://172.16.110.139:8181/streaming/DEFAULT/summarize", // AI 서버 경로
           "payload": { // AI 서버에 전달할 데이터
             "sentence": sentence,
             "metadata": metadata
           }
         }
 
-        fetchSse(url, body, function (data) {
+        fetchSse(hostUrl, body, function (data) {
           try {
             if (data && data != '[DONE]') { // streaming 메시지 수신 중
               try {
+                console.log(data);
                 $("#summary_response").text(data)
               } catch(e) {}
             } else if (data == '[DONE]') { // streaming이 종료되었을 때 처리
@@ -61,7 +62,7 @@
         var message = $("#message").val();
 
         // EER 서버로 요청
-        var url = 'http://172.16.100.225:8080/sseClient'
+        var hostUrl = 'http://172.16.100.225:8080/httpClient/sseClient'
         var body = {
           "url": "http://172.16.100.225:8181/streaming/bots/rag_bot/chat", // AI 서버 경로
           "payload": { // AI 서버에 전달할 데이터
@@ -73,7 +74,7 @@
           }
         }
 
-        fetchSse(url, body, function (data) {
+        fetchSse(hostUrl, body, function (data) {
           try {
             if (data && data != '[DONE]') { // streaming 메시지 수신 중
               try {

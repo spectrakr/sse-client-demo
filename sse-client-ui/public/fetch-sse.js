@@ -6,21 +6,23 @@ function fetchSse(url, body, onMessage, onError, onDone) {
     },
     body: JSON.stringify(body),
   })
-    .then(function (response) {
-      var reader = response.body.getReader();
-      var decoder = new TextDecoder();
+    .then((response) => {
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
 
-      var readChunk = function () {
+      const readChunk = () => {
         return reader.read().then(appendChunks);
       };
 
-      var appendChunks = function (result) {
-        var chunk = decoder.decode(result.value || new Uint8Array(), {
+      const appendChunks = (result) => {
+        const chunk = decoder.decode(result.value || new Uint8Array(), {
           stream: !result.done,
         });
 
-        var chunkValue = chunk.toString().replace("data: ", "").trim();
-        onMessage(chunkValue);
+        const chunkValue = chunk.toString().replace("data:", "").trim();
+        if (chunkValue) {
+          onMessage(chunkValue);
+        }
 
         if (!result.done) {
           return readChunk();
@@ -29,12 +31,12 @@ function fetchSse(url, body, onMessage, onError, onDone) {
 
       return readChunk();
     })
-    .then(function () {
+    .then(() => {
       if (onDone) {
         onDone();
       }
     })
-    .catch(function (e) {
+    .catch((e) => {
       if (onError) {
         onError(e);
       }
