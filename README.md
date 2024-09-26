@@ -45,6 +45,7 @@ Frontend 코드는 `EER`에서 사용하기 위한 `jQuery` 기반으로 작성�
 
 소스는 `sse-client-ui`에 있고 sse를 가져와서 응답처리를 하는 코드는 `fetch-sse.js` 내에 있습니다.
 
+> 스트리밍은 IE에서 지원하지 않습니다. SSE에서 사용하는 기술 중 fetch, Promise 등 IE에서 지원하지 않는 기술요소가 있어서 이 부분은 Edge, Chrome에서만 지원하기로 했습니다. 
 
 ### Front UI 서버 실행방법
 데모의 경우 `vite`를 통해 웹서버를 기동하고 있으며 데모를 실행하기 위해서는 `node`가 설치되어 있어야 합니다.
