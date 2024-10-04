@@ -25,16 +25,16 @@
       })
 
       function requestSummarizeStreaming() {
-        var sentence = $("#sentence").val();
-        var metadata = {
+        const sentence = $("#sentence").val();
+        const metadata = {
           "age": 15,
           "name": "홍길동"
         }
 
         // EER 서버로 요청
-        var hostUrl = 'http://172.16.100.225:8080/httpClient/sseClient'
-        // var hostUrl = 'http://172.16.100.225:8080/webflux/sseClient'
-        var body = {
+        const hostUrl = 'http://172.16.100.225:8080/httpClient/sseClient'
+        // const hostUrl = 'http://172.16.100.225:8080/webflux/sseClient'
+        const body = {
           "url": "http://172.16.100.225:8181/streaming/DEFAULT/summarize", // AI 서버 경로
           "payload": { // AI 서버에 전달할 데이터
             "sentence": sentence,
@@ -59,14 +59,13 @@
       }
 
       function requestBotMessageStreaming() {
-        var message = $("#message").val();
+        const message = $("#message").val();
 
         // EER 서버로 요청
-        var hostUrl = 'http://172.16.100.225:8080/httpClient/sseClient'
-        var body = {
-          "url": "http://172.16.100.225:8181/streaming/bots/rag_bot/chat", // AI 서버 경로
+        const hostUrl = 'http://localhost:8080/httpClient/sseClient'
+        const body = {
+          "url": "http://localhost:8181/streaming/bots/rag_bot/chat", // AI 서버 경로
           "payload": { // AI 서버에 전달할 데이터
-            "threadId": "TCKT001",
             "accessType": "public",
             "message": message,
             "metadata": {},
@@ -78,6 +77,7 @@
           try {
             if (data && data != '[DONE]') { // streaming 메시지 수신 중
               try {
+                console.log(data);
                 $("#bot_messsage_response").text(data)
               } catch(e) {}
             } else if (data == '[DONE]') { // streaming이 종료되었을 때 처리
